@@ -1,0 +1,84 @@
+import pandas as pd
+import numpy as np
+import networkx as nx
+import scipy.stats as ss
+from collections import defaultdict
+
+g_user_file = '../grafos/grafo_ELEICOES_BR.txt'
+
+rw_user_file = '/var/tmp/ELEICOES_BR_USER/rw.txt'
+rw_msg_file = '/var/tmp/ELEICOES_BR_MSG/rw.txt'
+
+# TODO: comparar ranking USER x ranking MSG
+# TODO: adicionar rank (no espaco de classes) e prox_relativa (no espaco de classes) ao lado de cada medida
+# TODO: adicionar metricas de variacao inter-classe e intra-classe
+# TODO: edit-distance like measure? https://stackoverflow.com/questions/2460177/edit-distance-in-python
+# TODO: NDCG-like measure?
+# TODO: supremacia do GLOBAL no ranking?
+# TODO: lift < 1 metric?
+# ranking concorrente: ranking dado pelo membership as comunidades.
+# ranking concorrente: ranking dado pelo PageRank (directed, undirected)
+# ranking concorrente: ranking dado por outras metricas de centralidade
+# metricas para comparacao: # distinct retweeters, # retweets, verified devem ir para os extremos do ranking.
+
+'''
+We present an algorithm that generates community embeddings using rw + PCAs.
+We compare them with centrality measures and show that there are two classes
+of neutral users.
+
+
+A typical task in network analysis is detecting communities. In this paper, we focus
+on the opposite task: ranking users by the degree to which they are not part of communities. 
+We leverage the following fundamental observations: (1) users in a social network post a set of messages,
+so their behavior is pulverized in many instances, what is a lot useful for statistical reasons. The typical
+user-to-user network, you see the user as a single node; it is much better to see its behavior several times
+through their messages, as a bernoulli sequence.
+
+A tentative approach would be to run community detection and then sort by probabilities. Most community
+detection algorithms do assign hard labels to communities.
+
+The practical application of our approach is that we can quiclky rank who to follow in a new unknown domain.
+
+Papers to cite: minimize risk conflict, garimella etc.
+
+Related Work:
+
+Community detection has been subject of extensive research: https://arxiv.org/pdf/cond-mat/0402522.pdf
+
+Betweeness metrics: 
+http://www2.unb.ca/~ddu/6634/Lecture_notes/Lecture_4_centrality_measure.pdf
+
+Community embedding:
+http://sentic.net/community-embedding.pdf
+
+http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0090283
+
+Como as metricas de centralidade variam?
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2875682/
+
+Sua metrica ta relacionada com comm. structure de alguma forma.
+
+As metricas de centralidade se dividem entre conectar caminhos e o volume?
+
+Analise das metricas de centralidade:
+https://www.fim-rc.de/Paperbibliothek/Veroeffentlicht/282/wi-282.pdf
+
+discard caminhos curtos nas metricas closeness e betweeness?
+
+chamar metrica de 'neutrality centrality'?
+
+plotar nodos proporcionais ao valor
+
+por que e' importante achar caras centrais?
+
+metricas de centralidade nem sempre concordam, como por exemplo as metricas de clustering (tese helio)?
+
+https://pdfs.semanticscholar.org/c7a2/de6bd14a049c69801851f59c44c76273e80c.pdf
+=> it measures how much a node falls between others or controls flows between others. Voce nao quer o how much!!
+
+ICWSM, RW =>  ethods to Determine Node Centrality and Clustering in Graphs with Uncertain Structure
+
+comparar com o grafo karate club
+
+citar paper local random walks
+
